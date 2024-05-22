@@ -58,4 +58,34 @@ function addNewTask() {
     save(STORAGE_KEY, currentState);
   }
 
+  function createTaskObject({ text, isDone = false }) {
+    return {
+      text,
+      isDone,
+      id: currentID,
+    };
+  }
+  
+  function addTaskToStorage(text) {
+    const currentState = load(STORAGE_KEY);
+    if (currentState === undefined) {
+      save(STORAGE_KEY, [createTaskObject({ text })]);
+    } else {
+      currentState.push(createTaskObject({ text }));
+      save(STORAGE_KEY, currentState);
+    }
+    currentID += 1;
+  }
+  
+  function fillTasksList() {
+    const currentState = load(STORAGE_KEY);
+    if (currentState !== undefined) {
+      currentState.forEach(createLi);
+      currentID =
+        currentState.length === 0
+          ? 1
+          : currentState[currentState.length - 1].id + 1;
+    }
+  }
+
 export { addNewTask, handleTaskBehaviour, fillTasksList };
